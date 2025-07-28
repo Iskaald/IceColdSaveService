@@ -1,0 +1,1 @@
+A flexible save service for Unity that manages properties of any type and supports saving to PlayerPrefs, files, or custom destinations using JSON serialization. Provides control over when and how data is saved.
