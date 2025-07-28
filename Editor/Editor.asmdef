@@ -1,0 +1,14 @@
+{
+  "name": "IceCold.SaveService.Editor",
+  "references": [
+    "IceCold.SaveService.Interface",
+    "IceCold.SaveService",
+    
+    "IceCold.Editor",
+    "IceCold.Interface",
+    "IceCold"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "IceCold.SaveService.Interface",
+  "references": [
+    "IceCold.Interface"
+  ]
+}
