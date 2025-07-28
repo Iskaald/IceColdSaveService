@@ -1,7 +1,7 @@
 {
   "name": "com.iskaald.saveservice",
   "version": "1.0.0",
-  "displayName": "Save Service",
+  "displayName": "Ice Cold Save Service",
   "description": "A flexible save service for Unity that manages properties of any type and supports saving to PlayerPrefs, files, or custom destinations using JSON serialization.",
   "unity": "2021.3",
   "author": {
