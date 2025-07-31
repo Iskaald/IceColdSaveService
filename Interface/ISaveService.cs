@@ -2,7 +2,7 @@
 
 namespace IceCold.SaveService.Interface
 {
-    public interface ISaveService : ICoreService
+    public interface ISaveService : IIceColdService
     {
         public IProperty<T> GetProperty<T>(string key, T defaultValue);
         public void SaveAll();

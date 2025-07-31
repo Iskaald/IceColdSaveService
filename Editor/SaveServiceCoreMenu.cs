@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace IceCold.SaveService.Editor
 {
-    public class SaveServiceCoreMenu : CoreMenu
+    public class SaveServiceCoreMenu : IceColdMenu
     {
         [MenuItem("IceCold/Save Service/Config", priority = 10)]
         private static void SelectSaveServiceConfig()
