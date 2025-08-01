@@ -1,11 +1,13 @@
-﻿namespace IceCold.SaveService.Interface
+﻿using System.Threading.Tasks;
+
+namespace IceCold.SaveService.Interface
 {
     public interface IProperty
     {
         public object Value { get; set; }
         public string Key { get; }
         
-        public void Save();
+        public Task<bool> Save();
     }
     
     public interface IProperty<T> : IProperty

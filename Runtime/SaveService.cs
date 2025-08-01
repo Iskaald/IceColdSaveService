@@ -8,7 +8,7 @@ using IceCold.SaveService.Interface;
 namespace IceCold.SaveService
 {
     [ServicePriority(3)]
-    public class SaveService : ISaveService
+    public class SaveService : IQuittingService,ISaveService
     {
         private SaveServiceConfig config;
         private ISaveMethod saveMethod;
@@ -27,7 +27,7 @@ namespace IceCold.SaveService
             IsInitialized = config != null && saveMethod != null;
 
             if (config?.saveStrategy == SaveStrategy.Interval && saveLoopTask == null)
-                saveLoopTask = SaveAllAsync();
+                saveLoopTask = IntervalSaveAllAsync();
         }
 
         public void Deinitialize()
@@ -58,22 +58,41 @@ namespace IceCold.SaveService
             return prop;
         }
 
-        public void SaveAll()
+        public async Task SaveAll()
         {
+            var saveTasks = new List<Task>();
             foreach (var prop in properties.Values)
             {
-                prop.Save();
-                IceColdLogger.Log($"Saved property {prop.Key}:{prop.Value}");
+                saveTasks.Add(prop.Save());
+                IceColdLogger.Log($"Saving property {prop.Key}:{prop.Value}");
             }
+            await Task.WhenAll(saveTasks);
         }
 
         private void AttemptSaveProperty(IProperty property)
         {
             if (config.saveStrategy != SaveStrategy.Aggressive) return;
-            property.Save();
+            _ = SavePropertySafelyAsync(property);
+        }
+        
+        private async Task SavePropertySafelyAsync(IProperty property)
+        {
+            try
+            {
+                await property.Save();
+            }
+            catch (Exception ex)
+            {
+                IceColdLogger.LogError($"Aggressive save for property '{property.Key}' failed: {ex.Message}");
+            }
+        }
+        
+        public void OnWillQuit()
+        {
+            
         }
 
-        public bool OnWillQuit()
+        public async Task<bool> CanQuitAsync()
         {
             if (cts != null && !cts.IsCancellationRequested)
             {
@@ -82,14 +101,14 @@ namespace IceCold.SaveService
                 cts = null;
             }
             
-            if (config.saveStrategy != SaveStrategy.Manual)
+            if (config?.saveStrategy != SaveStrategy.Manual)
             {
-                SaveAll();
+                await SaveAll();
             }
             return true;
         }
 
-        private async Task SaveAllAsync()
+        private async Task IntervalSaveAllAsync()
         {
             cts = new CancellationTokenSource();
 
@@ -98,7 +117,7 @@ namespace IceCold.SaveService
                 while (!cts.Token.IsCancellationRequested)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(config.saveIntervalInSeconds), cts.Token);
-                    SaveAll();
+                    await SaveAll();
                 }
             }
             catch (TaskCanceledException)

@@ -1,4 +1,5 @@
-﻿using IceCold.SaveService.Interface;
+﻿using System.Threading.Tasks;
+using IceCold.SaveService.Interface;
 using UnityEngine;
 
 namespace IceCold.SaveService
@@ -9,10 +10,10 @@ namespace IceCold.SaveService
     {
         private LocalSaveMethod localSaveMethod;
 
-        public override void SaveProperty(string key, string jsonValue)
+        public override Task<bool> SaveProperty(string key, string jsonValue)
         {
             localSaveMethod ??= new LocalSaveMethod();
-            localSaveMethod.SaveProperty(key, jsonValue);
+            return localSaveMethod.SaveProperty(key, jsonValue);
         }
 
         public override bool Exists(string key, out string value)

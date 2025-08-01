@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using IceCold.SaveService.Interface;
 using UnityEngine;
 
@@ -19,12 +20,13 @@ namespace IceCold.SaveService
                 Directory.CreateDirectory(path);
         }
         
-        public void SaveProperty(string key, string jsonValue)
+        public async Task<bool> SaveProperty(string key, string jsonValue)
         {
             try
             {
                 var filePath = GetFilePath(key);
-                File.WriteAllText(filePath, jsonValue);
+                await File.WriteAllTextAsync(filePath, jsonValue);
+                return true;
             }
             catch (IOException e)
             {
@@ -34,6 +36,7 @@ namespace IceCold.SaveService
             {
                 IceColdLogger.LogWarning($"Failed to save {key} to persistent storage: {e.Message}");
             }
+            return false;
         }
         
         public bool Exists(string key, out string value)
@@ -60,6 +63,26 @@ namespace IceCold.SaveService
                 if (File.Exists(filePath))
                 {
                     var content = File.ReadAllText(filePath);
+                    IceColdLogger.Log($"Loaded property '{key}' from file: {filePath}");
+                    return content;
+                }
+            }
+            catch (Exception e)
+            {
+                IceColdLogger.LogError($"Failed to load '{key}': {e}");
+            }
+
+            return null;
+        }
+
+        private async Task<string> LoadPropertyAsync(string key)
+        {
+            try
+            {
+                var filePath = GetFilePath(key);
+                if (File.Exists(filePath))
+                {
+                    var content = await File.ReadAllTextAsync(filePath);
                     IceColdLogger.Log($"Loaded property '{key}' from file: {filePath}");
                     return content;
                 }

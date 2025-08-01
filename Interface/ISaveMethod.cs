@@ -1,8 +1,10 @@
-﻿namespace IceCold.SaveService.Interface
+﻿using System.Threading.Tasks;
+
+namespace IceCold.SaveService.Interface
 {
     public interface ISaveMethod
     {
-        public void SaveProperty(string key, string jsonValue);
+        public Task<bool> SaveProperty(string key, string jsonValue);
 
         public bool Exists(string key, out string value);
     }

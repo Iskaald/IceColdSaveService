@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using IceCold.SaveService.Interface;
 using UnityEngine;
 using Unity.Plastic.Newtonsoft.Json;
@@ -26,7 +27,7 @@ namespace IceCold.SaveService
             set => Value = (T) value;
         }
 
-        public void Save()
+        public Task<bool> Save()
         {
             var json = JsonConvert.SerializeObject(new SaveWrapper<T> { v = value });
             
@@ -35,10 +36,10 @@ namespace IceCold.SaveService
                 IceColdLogger.LogWarning("Save method not available. Defaulting to PlayerPrefs for save.");
                 PlayerPrefs.SetString(key, json);
                 PlayerPrefs.Save();
-                return;
+                return Task.FromResult(false);
             }
             
-            saveMethod?.SaveProperty(key, json);
+            return saveMethod?.SaveProperty(key, json);
         }
 
         public Property(string key, T defaultValue, ISaveMethod method)

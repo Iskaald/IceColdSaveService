@@ -1,4 +1,5 @@
-﻿using IceCold.SaveService.Interface;
+﻿using System.Threading.Tasks;
+using IceCold.SaveService.Interface;
 using UnityEngine;
 
 namespace IceCold.SaveService
@@ -25,10 +26,11 @@ namespace IceCold.SaveService
             return false;
         }
 
-        public void SaveProperty(string key, string jsonValue)
+        public Task<bool> SaveProperty(string key, string jsonValue)
         {
             PlayerPrefs.SetString(key, jsonValue);
             PlayerPrefs.Save();
+            return Task.FromResult(true);
         }
         
         public static void Clear()

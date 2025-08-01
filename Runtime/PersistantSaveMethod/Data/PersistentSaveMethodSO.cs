@@ -1,4 +1,5 @@
-﻿using IceCold.SaveService.Interface;
+﻿using System.Threading.Tasks;
+using IceCold.SaveService.Interface;
 using UnityEngine;
 
 namespace IceCold.SaveService
@@ -11,10 +12,10 @@ namespace IceCold.SaveService
         
         private PersistentSaveMethod persistentSaveMethod;
 
-        public override void SaveProperty(string key, string jsonValue)
+        public override Task<bool> SaveProperty(string key, string jsonValue)
         {
             persistentSaveMethod ??= new PersistentSaveMethod();
-            persistentSaveMethod?.SaveProperty(key, jsonValue);
+            return persistentSaveMethod?.SaveProperty(key, jsonValue);
         }
 
         public override bool Exists(string key, out string value)
