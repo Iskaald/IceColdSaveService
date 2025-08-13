@@ -22,7 +22,7 @@ namespace IceCold.SaveService
         
         public void Initialize()
         {
-            config = ConfigLoader.GetConfig<SaveServiceConfig>(SaveServiceConfig.ConfigKey);
+            config = ConfigLoader.Get<SaveServiceConfig>(nameof(SaveServiceConfig));
             saveMethod = config?.saveMethod;
             IsInitialized = config != null && saveMethod != null;
 
